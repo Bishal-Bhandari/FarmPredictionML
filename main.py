@@ -5,7 +5,7 @@ try:
     address = str(input("Enter the city name: "))
 except ValueError:
     print("Given input is not valid.")
-key = "39f081a68ade00a3fc22b0dbb10487cc"  # API key
+key = "key"  # API key
 final_url = url + "q=" + address + "&appid=" + key
 
 response = requests.get(final_url)  # Sending HTTP request
