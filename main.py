@@ -19,6 +19,7 @@ if response.status_code == 200:
 
     Req_Data_Inner = []
     Req_Data_Main = []
+    Day_Feature = []
     # retrieving data in the json format
     data = response.json()
     # take the main dict block
@@ -31,8 +32,8 @@ if response.status_code == 200:
     # For current date
     today = date.today()
     # For making list of list for weather data
-    for j in range(0, 2):
-        for i in range(0, 2):
+    for j in range(0, 1):
+        for i in range(0, 1):
             Req_Data_Inner.clear()
             Req_Data_Inner.append(address)
             Req_Data_Inner.append(today.year)
@@ -41,11 +42,90 @@ if response.status_code == 200:
             Req_Data_Inner.append(Temp_Cel)
             Req_Data_Inner.append(main['humidity'])
             Req_Data_Inner.append(wind_report['speed'])
+            # for the condition of day
+            if Temp_Cel > 10:
+                Day_Feature.append("Cold")
+                if main['humidity'] <= 20:
+                    Day_Feature.append("Low Humidity")
+                    if wind_report['speed'] <= 10:
+                        Day_Feature.append("Low Wind")
+                    elif 11 <= wind_report['speed'] <= 20:
+                        Day_Feature.append("Mild Wind")
+                    else:
+                        Day_Feature.append("High Wind")
+                elif 21 <= main['humidity'] <= 60:
+                    Day_Feature.append("Mild Humidity")
+                    if wind_report['speed'] <= 10:
+                        Day_Feature.append("Low Wind")
+                    elif 11 <= wind_report['speed'] <= 20:
+                        Day_Feature.append("Mild Wind")
+                    else:
+                        Day_Feature.append("High Wind")
+                elif 61 <= main['humidity'] <= 100:
+                    Day_Feature.append("Ok Humidity")
+                    if wind_report['speed'] <= 10:
+                        Day_Feature.append("Low Wind")
+                    elif 11 <= wind_report['speed'] <= 20:
+                        Day_Feature.append("Mild Wind")
+                    else:
+                        Day_Feature.append("High Wind")
+            elif 10 >= Temp_Cel >= 20:
+                Day_Feature.append("Warm")
+                if main['humidity'] <= 20:
+                    Day_Feature.append("Low Humidity")
+                    if wind_report['speed'] <= 10:
+                        Day_Feature.append("Low Wind")
+                    elif 11 <= wind_report['speed'] <= 20:
+                        Day_Feature.append("Mild Wind")
+                    else:
+                        Day_Feature.append("High Wind")
+                elif 21 <= main['humidity'] <= 60:
+                    Day_Feature.append("Mild Humidity")
+                    if wind_report['speed'] <= 10:
+                        Day_Feature.append("Low Wind")
+                    elif 11 <= wind_report['speed'] <= 20:
+                        Day_Feature.append("Mild Wind")
+                    else:
+                        Day_Feature.append("High Wind")
+                elif 61 <= main['humidity'] <= 100:
+                    Day_Feature.append("Ok Humidity")
+                    if wind_report['speed'] <= 10:
+                        Day_Feature.append("Low Wind")
+                    elif 11 <= wind_report['speed'] <= 20:
+                        Day_Feature.append("Mild Wind")
+                    else:
+                        Day_Feature.append("High Wind")
+            elif 21 >= Temp_Cel >= 30:
+                Day_Feature.append("Hot")
+                if main['humidity'] <= 20:
+                    Day_Feature.append("Low Humidity")
+                    if wind_report['speed'] <= 10:
+                        Day_Feature.append("Low Wind")
+                    elif 11 <= wind_report['speed'] <= 20:
+                        Day_Feature.append("Mild Wind")
+                    else:
+                        Day_Feature.append("High Wind")
+                elif 21 <= main['humidity'] <= 60:
+                    Day_Feature.append("Mild Humidity")
+                    if wind_report['speed'] <= 10:
+                        Day_Feature.append("Low Wind")
+                    elif 11 <= wind_report['speed'] <= 20:
+                        Day_Feature.append("Mild Wind")
+                    else:
+                        Day_Feature.append("High Wind")
+                elif 61 <= main['humidity'] <= 100:
+                    Day_Feature.append("Ok Humidity")
+                    if wind_report['speed'] <= 10:
+                        Day_Feature.append("Low Wind")
+                    elif 11 <= wind_report['speed'] <= 20:
+                        Day_Feature.append("Mild Wind")
+                    else:
+                        Day_Feature.append("High Wind")
+            else:
+                Day_Feature = "Not Suitable"
+            Req_Data_Inner.append(str(Day_Feature))  # appending the day feature
             Req_Data_Main.append(Req_Data_Inner)  # appending the inner list to main list
             break
-    Req_Data_Main = Req_Data_Main
-    print(f"main req dataa {Req_Data_Main}")
-
 else:
     print("Error in the connection.")
 
@@ -61,12 +141,12 @@ Data_File.save(filename=Sheet_Name)
 Read_File = pd.read_excel(r'Weatherdata.xlsx')
 
 # ML to predict
-x = Read_File.drop(columns=['City'])
-y = Read_File['City']
-x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.0001)
-
-model = DecisionTreeClassifier()
-model.fit(x.values, y.values)
-pred = model.predict(x_test)
-score = accuracy_score(y_test, pred)
-print(score)
+Input_Dataset_Init = Read_File.drop(columns=['City'])
+Input_Dataset = Input_Dataset_Init.drop(columns=['Condition'])
+Output_Dataset = Read_File['Condition']
+# using tree
+Mod_Tree = DecisionTreeClassifier()
+Mod_Tree.fit(Input_Dataset.values, Output_Dataset)
+Prediction_Result = Mod_Tree.predict([[2022, 2, 3, 21, 5, 5]])
+# prediction based on previous data
+print(f"The result after prediction is as below:\n {Prediction_Result}")
