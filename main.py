@@ -15,7 +15,7 @@ def URL_Data():
         address = 'Kathmandu'  # str(input("Enter the city name: "))
     except ValueError:
         print("Given input is not valid.")
-    key = "key"  # API key
+    key = "39f081a68ade00a3fc22b0dbb10487cc"  # API key
     final_url = url + "q=" + address + "&appid=" + key
     response = requests.get(final_url)  # Sending HTTP request
     List_Data(response, address)
@@ -33,7 +33,8 @@ def List_Data(response, address):
         main = data['main']
         # converting kelvin temp to Celsius
         Temp_Kelvin = main['temp']
-        Temp_Cel = int(Temp_Kelvin - 273.15)
+        Temp_Cel = round((Temp_Kelvin - 273.15), 2)
+        print(Temp_Cel)
         # wind report
         wind_report = data['wind']
         # For current date
